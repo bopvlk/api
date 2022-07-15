@@ -1,0 +1,8 @@
+
+# web server
+bind_addr = ":5050"
+logger_level = "debug"
+
+
+[storage]
+database_uri = "host='localhost' port='5432' dbname='restapi' user='postgres' password='winter' sslmode='disable'"
