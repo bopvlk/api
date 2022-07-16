@@ -64,3 +64,37 @@ func (ur *UserRepository) SelectAll() ([]*models.User, error) {
 	}
 	return users, nil
 }
+
+//шукати користувача по id
+func (ur *UserRepository) FindUserById(id int) (*models.User, bool, error) {
+	users, err := ur.SelectAll()
+	var founded bool
+	if err != nil {
+		return nil, founded, err
+	}
+	var usersFounded *models.User
+	for _, a := range users {
+		if a.ID == id {
+			usersFounded = a
+			founded = true
+			break
+		}
+	}
+	return usersFounded, founded, nil
+}
+
+// Видалити користувача по ID
+func (ur *UserRepository) DeleteUser(id int) (*models.User, error) {
+	user, ok, err := ur.FindUserById(id)
+	if err != nil {
+		return nil, err
+	}
+	if ok {
+		query := fmt.Sprintf("DELETE FROM %s WHERE id=$1", tableUser)
+		_, err := ur.storage.db.Exec(query, id)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return user, nil
+}

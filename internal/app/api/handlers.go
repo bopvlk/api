@@ -243,3 +243,62 @@ func (api *API) PostUserRegister(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(201)
 	json.NewEncoder(w).Encode(msg)
 }
+
+func (api *API) DeleteUserById(w http.ResponseWriter, r *http.Request) {
+	initHeaders(w)
+	api.logger.Info("Delete user by ID, DELETE /api/v1/user/{id}")
+	id, err := strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		api.logger.Info("Trobles by parsing [id] param", err)
+		msg := Message{
+			StatusCode: 400,
+			Message:    "Unapropriate id value. Don`t use ID as uncasting to int value",
+			IsError:    true,
+		}
+		w.WriteHeader(400)
+		json.NewEncoder(w).Encode(msg)
+		return
+	}
+	_, ok, err := api.storage.User().FindUserById(id)
+	if err != nil {
+		api.logger.Info("Trobles while accessing database table (users) with id. err:", err)
+		msg := Message{
+			StatusCode: 500,
+			Message:    "We have some trobles to accesing database. Try again later.",
+			IsError:    true,
+		}
+		w.WriteHeader(500)
+		json.NewEncoder(w).Encode(msg)
+		return
+	}
+	if !ok {
+		api.logger.Info("Can not find user with that ID in database")
+		msg := Message{
+			StatusCode: 404,
+			Message:    "User with that ID does not in database",
+			IsError:    true,
+		}
+		w.WriteHeader(404)
+		json.NewEncoder(w).Encode(msg)
+		return
+	}
+	user, err := api.storage.User().DeleteUser(id)
+	if err != nil {
+		api.logger.Info("Trobles while deleting database elemett from table (user) with id. err:", err)
+		msg := Message{
+			StatusCode: 501,
+			Message:    "We have some trobles to accesing database. Try again later.",
+			IsError:    true,
+		}
+		w.WriteHeader(501)
+		json.NewEncoder(w).Encode(msg)
+		return
+	}
+	w.WriteHeader(202)
+	msg := Message{
+		StatusCode: 202,
+		Message:    fmt.Sprintf("User with ID: {%d} and Login: {%s} successfuly deleted", id, user.Login),
+		IsError:    false,
+	}
+	json.NewEncoder(w).Encode(msg)
+}
