@@ -9,7 +9,7 @@ import (
 
 //instance of storage
 type Storage struct {
-	config *Config
+	configDB *ConfigDB
 	//DataBase file discriptor
 	db *sql.DB
 	//subfield for repo interfasing (model user)
@@ -19,15 +19,16 @@ type Storage struct {
 }
 
 //storage constructor
-func New(config *Config) *Storage {
+func New(*ConfigDB) *Storage {
+	var config *ConfigDB
 	return &Storage{
-		config: config,
+		configDB: config,
 	}
 }
 
 //open conection method
 func (storage *Storage) Open() error {
-	db, err := sql.Open("postgres", storage.config.DatabaseURI)
+	db, err := sql.Open("postgres", storage.configDB.DatabaseURI)
 	if err != nil {
 		return err
 	}

@@ -28,7 +28,6 @@ func (api *API) configureRouterField() {
 	api.router.HandleFunc(prefix+"/articles", api.PostArticle).Methods("POST")
 	api.router.HandleFunc(prefix+"/user/register", api.PostUserRegister).Methods("POST")
 	api.router.HandleFunc(prefix+"/user/{id}", api.DeleteUserById).Methods("DELETE")
-
 }
 
 //хочемо зконфігурувати наш Stogage

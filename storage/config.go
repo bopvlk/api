@@ -1,10 +1,10 @@
 package storage
 
-type Config struct {
+type ConfigDB struct {
 	//строка підключення до БД
 	DatabaseURI string `toml:"database_uri"`
 }
 
-func NewConfig() *Config {
-	return &Config{}
+func NewConfigDB() *ConfigDB {
+	return &ConfigDB{}
 }

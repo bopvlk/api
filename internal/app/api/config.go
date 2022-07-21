@@ -9,13 +9,13 @@ type Config struct {
 	// logger level
 	LoggerLevel string `toml:"logger_level"`
 	// Store config
-	Storage *storage.Config
+	Storage *storage.ConfigDB
 }
 
 func NewConfig() *Config {
 	return &Config{
 		BindAddr:    ":5050",
 		LoggerLevel: "debug",
-		Storage:     storage.NewConfig(),
+		Storage:     storage.NewConfigDB(),
 	}
 }
